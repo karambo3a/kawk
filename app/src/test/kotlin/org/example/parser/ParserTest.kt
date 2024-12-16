@@ -270,7 +270,7 @@ class ParserTest {
 
     @Test
     fun testEvalConst() {
-        // "BEGIN {FS = \",\"} $1==\"hello\" { print ( NR, $2 + + 3 + $3 + 3, $2 * $3 * 3 * 3)}"
+        // "BEGIN {FS = \",\"} $1==\"hello\" { print ( NR, $2 + 3 + $3 + 3, $2 * $3 * 3 * 3, $4 - 1 - 2)}"
         val input = listOf(
             ExpectedToken(TokenType.KEYWORD, "BEGIN", Pos(1, 1)),
             ExpectedToken(TokenType.SPECIAL, "{", Pos(1, 7)),
@@ -301,9 +301,15 @@ class ParserTest {
             ExpectedToken(TokenType.INT, "3", Pos(1, 71)),
             ExpectedToken(TokenType.OPERATION, "*", Pos(1, 73)),
             ExpectedToken(TokenType.INT, "3", Pos(1, 75)),
-            ExpectedToken(TokenType.SPECIAL, ")", Pos(1, 76)),
-            ExpectedToken(TokenType.SPECIAL, "}", Pos(1, 77)),
-            ExpectedToken(TokenType.EOF, "", Pos(1, 78)),
+//            ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 76)),
+//            ExpectedToken(TokenType.IDENTIFIER, "$4", Pos(1, 78)),
+//            ExpectedToken(TokenType.OPERATION, "-", Pos(1, 80)),
+//            ExpectedToken(TokenType.INT, "1", Pos(1, 82)),
+//            ExpectedToken(TokenType.OPERATION, "-", Pos(1, 84)),
+//            ExpectedToken(TokenType.INT, "2", Pos(1, 86)),
+            ExpectedToken(TokenType.SPECIAL, ")", Pos(1, 87)),
+            ExpectedToken(TokenType.SPECIAL, "}", Pos(1, 88)),
+            ExpectedToken(TokenType.EOF, "", Pos(1, 89)),
         )
         val parser = Parser(input.iterator())
         val actualTree = parser.parse()
@@ -346,7 +352,14 @@ class ParserTest {
                                         Pair("*", IntNode(9, Pos(1, 61)))
                                     ),
                                     Pos(1, 61)
-                                )
+                                ),
+//                                BinaryOpNode(
+//                                    IdentifierNode("$4", Pos(1, 78)),
+//                                    listOf(
+//                                        Pair("-", IntNode(3, Pos(1, 78)))
+//                                    ),
+//                                    Pos(1, 78)
+//                                ),
                             ),
                             Pos(1, 32)
                         )

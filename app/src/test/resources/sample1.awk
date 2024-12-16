@@ -1,0 +1,1 @@
+BEGIN {FS = ","} $1=="hello" { print ( NR, $2 + $3, $2 * $3 ) }

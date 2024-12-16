@@ -1,6 +1,5 @@
 package org.example.parser
 
-import org.example.LexerException
 import org.example.ParserException
 import org.example.lexer.Pos
 import org.example.lexer.Token
@@ -224,118 +223,39 @@ class Parser(private val tokenIterator: Iterator<Token>) {
                     TokenType.IDENTIFIER,
                 ).contains(currentToken!!.type)
 
-    private fun returnStringValue(regex: Regex, value: String, pos: Pos): String {
-        val matchResult = regex.matchAt(value, 1)
-        if (matchResult == null) {
-            throw LexerException("Error: line=${pos.line} col=${pos.col}")
-        }
-        return matchResult.value
-    }
-
-    private fun getValue(node: ExprNode): Any {
-        if (node is IntNode) {
-            return node.value
-        }
-        if (node is FixedPointNode) {
-            return node.value
-        }
-        if (node is StringNode) {
-            val regexFixedPoint = Regex("-?0*[0-9]{0,20}\\.[0-9]{0,10}0*")
-            val regexInt = Regex("-?(?<![0-9])(?:0b[01]+|0x[0-9A-Fa-f]+|[1-9][0-9]*(?:_[0-9]+)*)(?![0-9_])")
-            if (regexFixedPoint.matchesAt(node.value, 1)) {
-                return returnStringValue(regexFixedPoint, node.value, node.pos).toDouble()
-            }
-            if (regexInt.matchesAt(node.value, 1)) {
-                return returnStringValue(regexInt, node.value, node.pos).toLong()
-            }
-            return 0L
-        }
-        throw ParserException("Unexpected token type")
-    }
-
-    private fun eval(acc: Pair<String, Any>, e: Pair<String, ExprNode>): Pair<String, Any> {
+    private fun eval(acc: Pair<String, Number>, e: Pair<String, LiteralNode>): Pair<String, Number> {
         if (acc.first == "") {
-            return Pair<String, Any>(e.first, getValue(e.second))
+            return Pair(e.first, e.second.getValue())
         }
-
-        val left = acc.second
-        val right = getValue(e.second)
-        if ((left !is Long && left !is Double) || (right !is Long && right !is Double)) {
-            throw ParserException("Unexpected token")
-        }
-
-        when (true) {
-            (left is Double) -> {
-                when (e.first) {
-                    "+" -> return Pair<String, Any>(acc.first, left + right.toDouble())
-                    "-" -> return Pair<String, Any>(acc.first, left - right.toDouble())
-                    "*" -> return Pair<String, Any>(acc.first, left * right.toDouble())
-                    "/" -> return Pair<String, Any>(acc.first, left / right.toDouble())
-                    "%" -> return Pair<String, Any>(acc.first, left * right.toDouble())
-                }
-            }
-
-            (right is Double) -> {
-                when (e.first) {
-                    "+" -> return Pair<String, Any>(acc.first, left.toDouble() + right)
-                    "-" -> return Pair<String, Any>(acc.first, left.toDouble() - right)
-                    "*" -> return Pair<String, Any>(acc.first, left.toDouble() * right)
-                    "/" -> return Pair<String, Any>(acc.first, left.toDouble() / right)
-                    "%" -> return Pair<String, Any>(acc.first, left.toDouble() % right)
-                }
-            }
-
-            else -> {
-                when (e.first) {
-                    "+" -> return Pair<String, Any>(acc.first, left.toLong() + right.toLong())
-                    "-" -> return Pair<String, Any>(acc.first, left.toLong() - right.toLong())
-                    "*" -> return Pair<String, Any>(acc.first, left.toLong() * right.toLong())
-                    "/" -> return Pair<String, Any>(acc.first, left.toLong() / right.toLong())
-                    "%" -> return Pair<String, Any>(acc.first, left.toLong() % right.toLong())
-                }
-            }
-
-        }
-        throw ParserException("Unexpected token type at line=${e.second.pos.line} col=${e.second.pos.col}")
-    }
-
-    private fun processIdentifierNode(
-        op: String,
-        identifiers: MutableList<Pair<String, ExprNode>>,
-        exprNode: ExprNode
-    ): MutableList<Pair<String, ExprNode>> {
-        if (op != "") {
-            identifiers.add(Pair<String, ExprNode>(op, exprNode))
-        }
-        return identifiers
+        return Pair(acc.first, BinaryOpNode.evaluate(acc.second, e.first, e.second.getValue()))
     }
 
     private fun evaluateConst(initial: ExprNode, expr: MutableList<Pair<String, ExprNode>>, pos: Pos): ExprNode {
         val identifiers = mutableListOf<Pair<String, ExprNode>>()
 
-        val res = expr.fold(Pair<String, Any>("", 0L)) { acc, e ->
-            if (e.second is IdentifierNode) {
+        val res = expr.fold(Pair<String, Number>("", 0L)) { acc, e ->
+            if (e.second is LiteralNode) {
+                eval(acc, Pair(e.first, e.second as LiteralNode))
+            } else {
                 identifiers.add(e)
                 acc
-            } else {
-                eval(acc, e)
             }
         }
 
         when (res.second) {
             is Long -> {
-                return if (initial is IdentifierNode) {
-                    r(res.first, IntNode(res.second as Long, pos), identifiers, initial)
-                } else {
+                return if (initial is LiteralNode) {
                     rr(initial, res.first, IntNode(res.second as Long, pos), identifiers)
+                } else {
+                    r(initial, res.first, IntNode(res.second as Long, pos), identifiers)
                 }
             }
 
             is Double -> {
-                return if (initial is IdentifierNode) {
-                    r(res.first, FixedPointNode(res.second as Double, pos), identifiers, initial)
-                } else {
+                return if (initial is LiteralNode) {
                     rr(initial, res.first, FixedPointNode(res.second as Double, pos), identifiers)
+                } else {
+                    r(initial, res.first, FixedPointNode(res.second as Double, pos), identifiers)
                 }
             }
         }
@@ -343,10 +263,10 @@ class Parser(private val tokenIterator: Iterator<Token>) {
     }
 
     private fun r(
+        initial: ExprNode,
         op: String,
         newNode: ExprNode,
-        identifiers: MutableList<Pair<String, ExprNode>>,
-        initial: IdentifierNode
+        identifiers: MutableList<Pair<String, ExprNode>>
     ): ExprNode {
         if (op != "") {
             identifiers.add(Pair<String, ExprNode>(op, newNode))
@@ -354,10 +274,15 @@ class Parser(private val tokenIterator: Iterator<Token>) {
         return if (identifiers.isEmpty()) initial else BinaryOpNode(initial, identifiers, newNode.pos)
     }
 
-    private fun rr(initial: ExprNode, op: String, newNode: ExprNode, identifiers: MutableList<Pair<String, ExprNode>>): ExprNode {
+    private fun rr(
+        initial: LiteralNode,
+        op: String,
+        newNode: LiteralNode,
+        identifiers: MutableList<Pair<String, ExprNode>>
+    ): ExprNode {
         val init = eval(
-            Pair<String, Any>("+", getValue(initial)),
-            Pair<String, ExprNode>(op, newNode)
+            Pair<String, Number>("+", initial.getValue()),
+            Pair<String, LiteralNode>(op, newNode)
         )
         return if (init.second is Long) {
             if (identifiers.isEmpty()) IntNode(init.second as Long, newNode.pos)

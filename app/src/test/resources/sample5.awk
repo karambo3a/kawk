@@ -1,0 +1,1 @@
+{ print $0; $9="hello" ; print $0 ;  print NF   }

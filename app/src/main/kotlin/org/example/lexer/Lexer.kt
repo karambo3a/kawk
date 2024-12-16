@@ -95,11 +95,15 @@ class TextLexer(private val src: String) : Lexer {
             if (matchResult == null) {
                 throw LexerException("Error: line=$line col=$col")
             }
+            var repr = matchResult.value
+            if (tokenType == TokenType.STRING) {
+                repr = repr.substring(1, repr.lastIndex)
+            }
             currPos += matchResult.value.length
             col += matchResult.value.length
             return object : Token {
                 override val type: TokenType = tokenType
-                override val repr: String = matchResult.value
+                override val repr: String = repr
                 override val pos: Pos = Pos(line, col - matchResult.value.length)
             }
         }

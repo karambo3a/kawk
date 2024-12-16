@@ -1,0 +1,1 @@
+BEGIN { NR = 10 } { print (NR, $0)}
