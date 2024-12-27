@@ -2,12 +2,17 @@ package org.example.lexer
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class Lexer9Test {
     @Test
-    fun emptySource() {
+    fun emptySource() {        // add eof
         val emptyLexer = TextLexer("")
-        assertEquals(emptyLexer.iterator().hasNext(), false)
+        val iterator = emptyLexer.iterator()
+        assertTrue(iterator.hasNext())
+        assertEquals(TokenType.EOF, iterator.next().type)
+        assertFalse(iterator.hasNext())
     }
 
     @Test

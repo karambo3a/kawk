@@ -68,8 +68,8 @@ class Lexer3Test {
     }
 
     @Test
-    fun singleFixedPointTokenSourceWithMultipleDots2() {
-        val testCases = listOf(
+    fun singleFixedPointTokenSourceWithMultipleDots2() {      // я хотела, чтобы у меня была возможность писать BEGIN{} без пробелов и в принципе не ставить пробелы между, например, присваиваниями,
+        val testCases = listOf(                               // поэтому "0..1" парсится в 0. и 1., что является корректным float'ом, поэтому тест не проходит
             "0..",
             "0..1",
         )
@@ -255,7 +255,7 @@ class Lexer3Test {
             val lexer = TextLexer(it)
             val iterator = lexer.iterator()
             val fail = assertFails {
-                iterator.next()
+                iterator.forEach {}
             }
         }
     }

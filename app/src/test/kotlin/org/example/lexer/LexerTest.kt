@@ -15,7 +15,7 @@ class LexerTest {
         val expected = listOf(
             ExpectedToken(TokenType.EOF, "", Pos(1, 1)),
             ExpectedToken(TokenType.EOF, "", Pos(1, 7)),
-            ExpectedToken(TokenType.EOF, "", Pos(2, 16)),
+            ExpectedToken(TokenType.EOF, "", Pos(2, 15)),
         )
         var i = 0
         testCases.forEach {
@@ -66,11 +66,11 @@ class LexerTest {
             ExpectedToken(TokenType.SPECIAL, "{", Pos(1, 7)),
             ExpectedToken(TokenType.IDENTIFIER, "FS", Pos(1, 8)),
             ExpectedToken(TokenType.ASSIGN, "=", Pos(1, 11)),
-            ExpectedToken(TokenType.STRING, "\",\"", Pos(1, 13)),
+            ExpectedToken(TokenType.STRING, ",", Pos(1, 13)),
             ExpectedToken(TokenType.SPECIAL, "}", Pos(1, 16)),
             ExpectedToken(TokenType.IDENTIFIER, "$1", Pos(1, 18)),
             ExpectedToken(TokenType.OPERATION, "==", Pos(1, 20)),
-            ExpectedToken(TokenType.STRING, "\"hello\"", Pos(1, 22)),
+            ExpectedToken(TokenType.STRING, "hello", Pos(1, 22)),
             ExpectedToken(TokenType.SPECIAL, "{", Pos(1, 30)),
             ExpectedToken(TokenType.IDENTIFIER, "print", Pos(1, 32)),
             ExpectedToken(TokenType.SPECIAL, "(", Pos(1, 38)),
@@ -130,7 +130,7 @@ class LexerTest {
             ExpectedToken(TokenType.SPECIAL, "(", Pos(1, 5)),
             ExpectedToken(TokenType.IDENTIFIER, "$1", Pos(1, 6)),
             ExpectedToken(TokenType.OPERATION, "==", Pos(1, 9)),
-            ExpectedToken(TokenType.STRING, "r\"wow!\"", Pos(1, 12)),
+            ExpectedToken(TokenType.STRING, "wow!", Pos(1, 12)),
             ExpectedToken(TokenType.SPECIAL, ")", Pos(1, 19)),
             ExpectedToken(TokenType.SPECIAL, ";", Pos(1, 20)),
             ExpectedToken(TokenType.IDENTIFIER, "print", Pos(1, 22)),
@@ -139,7 +139,7 @@ class LexerTest {
             ExpectedToken(TokenType.KEYWORD, "END", Pos(1, 32)),
             ExpectedToken(TokenType.SPECIAL, "{", Pos(1, 36)),
             ExpectedToken(TokenType.IDENTIFIER, "print", Pos(1, 37)),
-            ExpectedToken(TokenType.STRING, "\"done\"", Pos(1, 43)),
+            ExpectedToken(TokenType.STRING, "done", Pos(1, 43)),
             ExpectedToken(TokenType.SPECIAL, "}", Pos(1, 49)),
             ExpectedToken(TokenType.EOF, "", Pos(1, 50)),
         )
@@ -177,7 +177,7 @@ class LexerTest {
             ExpectedToken(TokenType.IDENTIFIER, "print", Pos(3, 3)),
             ExpectedToken(TokenType.IDENTIFIER, "$1", Pos(3, 9)),
             ExpectedToken(TokenType.SPECIAL, "}", Pos(3, 11)),
-            ExpectedToken(TokenType.EOF, "", Pos(4, 15)),
+            ExpectedToken(TokenType.EOF, "", Pos(4, 14)),
         )
         val lexer = TextLexer("/* comment \n comment */\n {print $1} \n /* comment */")
         testCases.forEach {

@@ -419,29 +419,29 @@ class ParserTest {
             ExpectedToken(TokenType.IDENTIFIER, "print", Pos(1, 2)),
             ExpectedToken(TokenType.SPECIAL, "(", Pos(1, 7)),
 
-            ExpectedToken(TokenType.STRING, "\"1.1\"", Pos(1, 8)),
+            ExpectedToken(TokenType.STRING, "1.1", Pos(1, 8)),
             ExpectedToken(TokenType.OPERATION, "+", Pos(1, 14)),
-            ExpectedToken(TokenType.STRING, "\"5.4\"", Pos(1, 16)),
+            ExpectedToken(TokenType.STRING, "5.4", Pos(1, 16)),
             ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 22)),
 
-            ExpectedToken(TokenType.STRING, "\"10\"", Pos(1, 24)),
+            ExpectedToken(TokenType.STRING, "10", Pos(1, 24)),
             ExpectedToken(TokenType.OPERATION, "/", Pos(1, 29)),
-            ExpectedToken(TokenType.STRING, "\"2\"", Pos(1, 31)),
+            ExpectedToken(TokenType.STRING, "2", Pos(1, 31)),
             ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 32)),
 
-            ExpectedToken(TokenType.STRING, "\"123.qq\"", Pos(1, 25)),
+            ExpectedToken(TokenType.STRING, "123.qq", Pos(1, 25)),
             ExpectedToken(TokenType.OPERATION, "/", Pos(1, 35)),
-            ExpectedToken(TokenType.STRING, "\"12\"", Pos(1, 37)),
+            ExpectedToken(TokenType.STRING, "12", Pos(1, 37)),
             ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 32)),
 
-            ExpectedToken(TokenType.STRING, "\"-123\"", Pos(1, 34)),
+            ExpectedToken(TokenType.STRING, "-123", Pos(1, 34)),
             ExpectedToken(TokenType.OPERATION, "+", Pos(1, 41)),
-            ExpectedToken(TokenType.STRING, "\"12\"", Pos(1, 43)),
+            ExpectedToken(TokenType.STRING, "12", Pos(1, 43)),
             ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 44)),
 
-            ExpectedToken(TokenType.STRING, "\"--123\"", Pos(1, 46)),
+            ExpectedToken(TokenType.STRING, "--123", Pos(1, 46)),
             ExpectedToken(TokenType.OPERATION, "+", Pos(1, 54)),
-            ExpectedToken(TokenType.STRING, "\"12q\"", Pos(1, 56)),
+            ExpectedToken(TokenType.STRING, "12q", Pos(1, 56)),
 
             ExpectedToken(TokenType.SPECIAL, ")", Pos(1, 62)),
             ExpectedToken(TokenType.SPECIAL, "}", Pos(1, 63)),
@@ -485,27 +485,27 @@ class ParserTest {
             ExpectedToken(TokenType.IDENTIFIER, "print", Pos(1, 2)),
             ExpectedToken(TokenType.SPECIAL, "(", Pos(1, 7)),
 
-            ExpectedToken(TokenType.STRING, "\"1.1\"", Pos(1, 8)),
+            ExpectedToken(TokenType.STRING, "1.1", Pos(1, 8)),
             ExpectedToken(TokenType.OPERATION, "+", Pos(1, 14)),
             ExpectedToken(TokenType.INT, "5", Pos(1, 16)),
             ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 17)),
 
-            ExpectedToken(TokenType.STRING, "\"10q\"", Pos(1, 19)),
+            ExpectedToken(TokenType.STRING, "10q", Pos(1, 19)),
             ExpectedToken(TokenType.OPERATION, "/", Pos(1, 25)),
             ExpectedToken(TokenType.FIXED_POINT, "2.5", Pos(1, 26)),
             ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 31)),
 
             ExpectedToken(TokenType.FIXED_POINT, "2.5", Pos(1, 33)),
             ExpectedToken(TokenType.OPERATION, "*", Pos(1, 37)),
-            ExpectedToken(TokenType.STRING, "\"10\"", Pos(1, 39)),
+            ExpectedToken(TokenType.STRING, "10", Pos(1, 39)),
             ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 44)),
 
-            ExpectedToken(TokenType.STRING, "\"30\"", Pos(1, 46)),
+            ExpectedToken(TokenType.STRING, "30", Pos(1, 46)),
             ExpectedToken(TokenType.OPERATION, "-", Pos(1, 52)),
             ExpectedToken(TokenType.INT, "15", Pos(1, 54)),
             ExpectedToken(TokenType.SPECIAL, ",", Pos(1, 55)),
 
-            ExpectedToken(TokenType.STRING, "\"someString\"", Pos(1, 57)),
+            ExpectedToken(TokenType.STRING, "someString", Pos(1, 57)),
             ExpectedToken(TokenType.OPERATION, "*", Pos(1, 70)),
             ExpectedToken(TokenType.INT, "100", Pos(1, 72)),
 

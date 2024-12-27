@@ -86,9 +86,9 @@ class Lexer8Test {
         val tokens = lexer.iterator()
         testCases.forEach { (repr, expectedType, expectedPos) ->
             val got = tokens.next()
-            //assertEquals(expectedType, got.type)
-            //assertEquals(repr, got.repr)
-            //assertEquals(expectedPos, got.pos)
+            assertEquals(expectedType, got.type)
+            assertEquals(repr, got.repr)
+            assertEquals(expectedPos, got.pos)
         }
     }
 
@@ -134,7 +134,7 @@ class Lexer8Test {
     }
 
     @Test
-    fun testMultiLineComment() {
+    fun testMultiLineComment() {    // add eof
         val lexer = TextLexer(
             """
         123.45 123. 0.45 .45 100000.0 /* Multi-line 
@@ -148,7 +148,7 @@ class Lexer8Test {
             Triple("0.45", TokenType.FIXED_POINT, Pos(1, 13)),
             Triple(".45", TokenType.FIXED_POINT, Pos(1, 18)),
             Triple("100000.0", TokenType.FIXED_POINT, Pos(1, 22)),
-            Triple("567.89", TokenType.FIXED_POINT, Pos(2, 1))
+            Triple("567.89", TokenType.FIXED_POINT, Pos(3, 1))
         )
 
         val tokens = lexer.iterator()
@@ -156,7 +156,7 @@ class Lexer8Test {
             val got = tokens.next()
             assertEquals(expectedType, got.type)
             assertEquals(repr, got.repr)
-            //assertEquals(expectedPos, got.pos)
+            assertEquals(expectedPos, got.pos)
         }
     }
 

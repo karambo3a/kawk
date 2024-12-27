@@ -6,11 +6,13 @@ import kotlin.test.assertTrue
 import kotlin.test.assertFailsWith
 
 class Lexer6Test {
-    @Test fun emptySource() {
+    @Test
+    fun emptySource() {
         val emptyLexer = TextLexer("")
     }
 
-    @Test fun singleTokenSource() {
+    @Test
+    fun singleTokenSource() {
         val testCases = listOf(
             "abc" to ExpectedToken(TokenType.IDENTIFIER, "abc", Pos(1, 1)),
             "a1" to ExpectedToken(TokenType.IDENTIFIER, "a1", Pos(1, 1)),
@@ -46,7 +48,7 @@ class Lexer6Test {
         """.trimIndent())
 
         val tokens = lexer.toList()
-        assertEquals(2, tokens.size)
+        assertEquals(3, tokens.size)        // add eof
         assertEquals(TokenType.KEYWORD, tokens[0].type)
         assertEquals("BEGIN", tokens[0].repr)
         assertEquals(Pos(2, 1), tokens[0].pos)
@@ -57,7 +59,7 @@ class Lexer6Test {
     }
 
     @Test
-    fun multipleTokensInLine() {
+    fun multipleTokensInLine() {   // add eof
         val lexer = TextLexer("BEGIN { abc = \"123\" + 0.1 + 1 }")
         val expectedTokens = listOf(
             ExpectedToken(TokenType.KEYWORD, "BEGIN", Pos(1, 1)),
@@ -69,7 +71,8 @@ class Lexer6Test {
             ExpectedToken(TokenType.FIXED_POINT, "0.1", Pos(1, 23)),
             ExpectedToken(TokenType.OPERATION, "+", Pos(1, 27)),
             ExpectedToken(TokenType.INT, "1", Pos(1, 29)),
-            ExpectedToken(TokenType.SPECIAL, "}", Pos(1, 31))
+            ExpectedToken(TokenType.SPECIAL, "}", Pos(1, 31)),
+            ExpectedToken(TokenType.EOF, "", Pos(1, 32))
         )
 
         val tokens = lexer.toList()

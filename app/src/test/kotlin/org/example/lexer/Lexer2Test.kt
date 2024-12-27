@@ -15,7 +15,7 @@ class Lexer2Test {
     fun testEmptySource() {
         val iterator = TextLexer("").iterator()
         assertTrue(iterator.hasNext())
-	assertEquals(TokenType.EOF, iterator.next().type)
+        assertEquals(TokenType.EOF, iterator.next().type)
         assertFalse(iterator.hasNext())
     }
 
@@ -102,7 +102,10 @@ class Lexer2Test {
         val lexer = TextLexer(source)
         val tokens = lexer.toList()
 
-        assertEquals(1, tokens.size)
+        assertEquals(
+            2,         // add eof
+            tokens.size
+        )
         assertEquals(TokenType.STRING, tokens.first().type)
         assertEquals(Pos(1, 1), tokens.first().pos)
     }
@@ -133,6 +136,7 @@ class Lexer2Test {
             Pos(line = 6, col = 6),
             Pos(line = 6, col = 7),
             Pos(line = 6, col = 8),
+            Pos(line = 6, col = 9),    //eof
         )
         assertEquals(expected, tokens.map { it.pos })
     }
@@ -142,7 +146,7 @@ class Lexer2Test {
         val source = """
             BEGIN; END; BEGINid; // begin and end
             {
-            ${'$'}variable = 000__000000000000000_00000001000 + 0b011101 + 0xaF231 == id;
+            ${'$'}variable = 000_000000000000000_00000001000 + 0b011101 + 0xaF231 == id;    
             /*
             r"raw\str\\\ing\" = "\"not\\\"\\ raw\\"
             */
@@ -179,13 +183,14 @@ class Lexer2Test {
             TokenType.FIXED_POINT,
             TokenType.FIXED_POINT,
             TokenType.SPECIAL,
+            TokenType.EOF,         // eof
         )
 
         assertEquals(expected, tokens.map { it.type })
     }
 
     @Test
-    fun testReprMultiline() {
+    fun testReprMultiline() {   // исправила, чтобы expected соответствовал source
         val source = """
             BEGIN; END; BEGINid; // begin and end
             {
@@ -219,13 +224,14 @@ class Lexer2Test {
             "==",
             "id",
             ";",
-            "r\"raw\\str\\\\\\ing\\\"",
+            "raw\\str\\\\\\ing\\",
             "=",
-            "\"\\\"not\\\\\\\"\\\\ raw\\\\\"",
-            "0000000000000000000000000123.",
+            "\\\"not\\\\\\\"\\\\ raw\\\\",
+            "0000000000000000000123.",
             ".1230000000000000000000000000",
-            "0000000000000000000000000123.1230000000000000000000000000",
+            "00000000000000123.1230000000000000000000000000",
             "}",
+            ""                                                          // eof
         )
 
         assertEquals(expected, tokens.map { it.repr })
