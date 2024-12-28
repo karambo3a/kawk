@@ -1,14 +1,182 @@
 package org.example.parser
 
 import org.example.lexer.Pos
+import org.example.lexer.TextLexer
 import org.example.lexer.Token
 import org.example.lexer.TokenType
 import kotlin.collections.listOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 
 
 class ParserTest {
+    @Test
+    fun testEmpty() {
+        val parser = Parser(TextLexer("").iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+    @Test
+    fun testEmptyBlock() {
+        val parser = Parser(TextLexer("{}").iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+    @Test
+    fun testJustSemi() {
+        // sentences ::= | sentence | ';' sentences
+        val parser = Parser(TextLexer("{;}").iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+    @Test
+    fun testSemiMany() {
+        // sentences ::= | sentence | ';' sentences
+        val code = "{;;;;;;;;;;;}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+    @Test
+    fun testConstIsNotStatement() {
+        // sentence ::= func_call | assignment
+        val code = "{1}"
+        val parser = Parser(TextLexer(code).iterator())
+        assertFails {
+            parser.parse()
+        }
+    }
+
+    @Test
+    fun testVarIsNotStatement() {
+        // sentence ::= func_call | assignment
+        val code = "{v}"
+        val parser = Parser(TextLexer(code).iterator())
+        assertFails {
+            parser.parse()
+        }
+    }
+
+
+    @Test
+    fun testJustAssign() {
+        val code = "{x=5}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+    @Test
+    fun testAssignSemi() {
+        // должно быть можно, потому что sentences может быть пуст
+        val code = "{x=5;}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+    @Test
+    fun testAssignSemi2() {
+        // должно быть можно, потому что sentences может быть пуст
+        val code = "{x=5;;}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+    @Test
+    fun testAssignSemi3() {
+        val code = "{x=5;x=10}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+    @Test
+    fun testFuncNotPrint() {
+        val code = "{f(1)}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+
+    @Test
+    fun testFuncNoParams() {
+        //func_call ::= IDENTIFIER  '(' params ')' | IDENTIFIER  param
+        val code = "{f()}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+    @Test
+    fun testFuncManyParams() {
+        //func_call ::= IDENTIFIER  '(' params ')' | IDENTIFIER  param
+        val code = "{f(1, 2, x)}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+    @Test
+    fun testFuncNoParens() {
+        //func_call ::= IDENTIFIER  '(' params ')' | IDENTIFIER  param
+        val code = "{f 1+123}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+    }
+
+
+    @Test
+    fun testExpr1() {
+        val code = "{f = 1 + b + a}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+    }
+
+    @Test
+    fun testExpr2() {
+        val code = "{f = 1 + (b + 2)}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+    }
+
+    @Test
+    fun testMany() {
+        val code = "BEGIN{a=1}END{a=1}END{a=1}1{a=1}\"\"{a=1}"
+        val parser = Parser(TextLexer(code).iterator())
+        val actualTree = parser.parse()
+        println(actualTree)
+    }
+
+
+    @Test
+    fun testCrazyStaff() {
+        val code = listOf(
+            "BEGIN{",
+            "BEGIN{a=()}",
+            "a=()}",
+            "a=(){}",
+            "$123{",
+            "BEGIN",
+            "END",
+            "{a+}",
+            "{a+{}}",
+            "{a=f(1)}",
+            "{print 1, 2}",
+        )
+        code.forEach {
+            val parser = Parser(TextLexer(it).iterator())
+            assertFails {
+                parser.parse()
+            }
+        }
+    }
+
     @Test
     fun test1() {
         // "BEGIN {FS = \",\"} $1==\"hello\" { print ( NR, $2 + $3, $2 * $3 ) }"
