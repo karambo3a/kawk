@@ -98,6 +98,10 @@ data class BraceExprNode(
 
 sealed class SentenceNode : ASTNode()
 
+data class EmptySentence(
+    override val pos: Pos
+) : SentenceNode()
+
 data class FuncCallNode(
     val name: IdentifierNode,
     val params: List<ExprNode>,
@@ -176,6 +180,7 @@ fun print(out: PrintStream, node: SentenceNode, indent: Int) {
     when (node) {
         is AssignmentNode -> print(out, node, indent)
         is FuncCallNode -> print(out, node, indent)
+        is EmptySentence -> print(out, node, indent)
     }
 }
 
@@ -183,6 +188,10 @@ fun print(out: PrintStream, node: AssignmentNode, indent: Int) {
     out.println("${"\t".repeat(indent)}AssignmentNode(${node.pos})")
     print(out, node.name, indent + 1)
     print(out, node.expr, indent + 1)
+}
+
+fun print(out: PrintStream, node: EmptySentence, indent: Int) {
+    out.println("${"\t".repeat(indent)}EmptySentence(${node.pos})")
 }
 
 fun print(out: PrintStream, node: LiteralNode, indent: Int) {

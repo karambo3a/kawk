@@ -52,6 +52,7 @@ class Runtime(private val programNode: ProgramNode, input: Reader) : AutoCloseab
     private fun processNode(node: SentenceNode) = when (node) {
         is FuncCallNode -> processNode(node)
         is AssignmentNode -> processNode(node)
+        is EmptySentence -> {}
     }
 
     private fun processNode(node: FuncCallNode) {

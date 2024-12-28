@@ -63,16 +63,38 @@ class Parser(private val tokenIterator: Iterator<Token>) {
     }
 
     private fun parseBlock(): List<SentenceNode> {
-        expect("{")
+        var prevToken = expect("{")
         val statements = mutableListOf<SentenceNode>()
         while (!match(TokenType.SPECIAL, "}")) {
             if (statements.isNotEmpty() && match(TokenType.SPECIAL, ";")) {
-                nextToken()
+                if (prevToken.repr == ";") {
+                    statements.add(EmptySentence(currTokenPos()))
+                }
+                prevToken = nextToken()
             } else if (statements.isNotEmpty()) {
                 val pos = currTokenPos()
                 throw ParserException("Expected ';' at line=${pos.line} col=${pos.col}")
             }
-            statements.add(parseSentence())
+            when {
+                prevToken.repr == "{" && match(TokenType.SPECIAL, ";") -> {
+                    statements.add(EmptySentence(currTokenPos()))
+                    prevToken = nextToken()
+                }
+                prevToken.repr == ";" && match(TokenType.SPECIAL, ";") -> {
+                    statements.add(EmptySentence(currTokenPos()))
+                    prevToken = nextToken()
+                }
+                prevToken.repr == ";" && match(TokenType.SPECIAL, "}") -> {
+                    statements.add(EmptySentence(currTokenPos()))
+                }
+                else -> {
+                    prevToken = currentToken!!
+                    statements.add(parseSentence())
+                }
+            }
+      }
+        if (prevToken.repr == ";" && match(TokenType.SPECIAL, "}")) {
+            statements.add(EmptySentence(currTokenPos()))
         }
         expect("}")
         return statements
@@ -227,6 +249,9 @@ class Parser(private val tokenIterator: Iterator<Token>) {
         if (acc.first == "") {
             return Pair(e.first, e.second.getValue())
         }
+        if (e.first == "") {
+            return Pair(acc.first, acc.second)
+        }
         return Pair(acc.first, BinaryOpNode.evaluate(acc.second, e.first, e.second.getValue()))
     }
 
@@ -245,24 +270,24 @@ class Parser(private val tokenIterator: Iterator<Token>) {
         when (res.second) {
             is Long -> {
                 return if (initial is LiteralNode) {
-                    rr(initial, res.first, IntNode(res.second as Long, pos), identifiers)
+                    initialIsLiteralNode(initial, res.first, IntNode(res.second as Long, pos), identifiers)
                 } else {
-                    r(initial, res.first, IntNode(res.second as Long, pos), identifiers)
+                    initialIsIdentifier(initial, res.first, IntNode(res.second as Long, pos), identifiers)
                 }
             }
 
             is Double -> {
                 return if (initial is LiteralNode) {
-                    rr(initial, res.first, FixedPointNode(res.second as Double, pos), identifiers)
+                    initialIsLiteralNode(initial, res.first, FixedPointNode(res.second as Double, pos), identifiers)
                 } else {
-                    r(initial, res.first, FixedPointNode(res.second as Double, pos), identifiers)
+                    initialIsIdentifier(initial, res.first, FixedPointNode(res.second as Double, pos), identifiers)
                 }
             }
         }
         throw ParserException("Unexpected token type at line=${pos.line} col=${pos.col}")  //TODO
     }
 
-    private fun r(
+    private fun initialIsIdentifier(
         initial: ExprNode,
         op: String,
         newNode: ExprNode,
@@ -274,7 +299,7 @@ class Parser(private val tokenIterator: Iterator<Token>) {
         return if (identifiers.isEmpty()) initial else BinaryOpNode(initial, identifiers, newNode.pos)
     }
 
-    private fun rr(
+    private fun initialIsLiteralNode(
         initial: LiteralNode,
         op: String,
         newNode: LiteralNode,

@@ -15,20 +15,20 @@ class ParserTest {
     fun testEmpty() {
         val parser = Parser(TextLexer("").iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
     @Test
     fun testEmptyBlock() {
         val parser = Parser(TextLexer("{}").iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
     @Test
     fun testJustSemi() {
         // sentences ::= | sentence | ';' sentences
         val parser = Parser(TextLexer("{;}").iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
     @Test
@@ -37,7 +37,7 @@ class ParserTest {
         val code = "{;;;;;;;;;;;}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
     @Test
@@ -66,7 +66,7 @@ class ParserTest {
         val code = "{x=5}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
     @Test
@@ -75,7 +75,7 @@ class ParserTest {
         val code = "{x=5;}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
     @Test
@@ -84,7 +84,7 @@ class ParserTest {
         val code = "{x=5;;}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
     @Test
@@ -92,7 +92,7 @@ class ParserTest {
         val code = "{x=5;x=10}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
     @Test
@@ -100,7 +100,7 @@ class ParserTest {
         val code = "{f(1)}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
 
@@ -110,7 +110,7 @@ class ParserTest {
         val code = "{f()}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
     @Test
@@ -119,7 +119,7 @@ class ParserTest {
         val code = "{f(1, 2, x)}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
     @Test
@@ -128,6 +128,7 @@ class ParserTest {
         val code = "{f 1+123}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
+        print(System.out, actualTree)
     }
 
 
@@ -136,6 +137,7 @@ class ParserTest {
         val code = "{f = 1 + b + a}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
+        print(System.out, actualTree)
     }
 
     @Test
@@ -143,6 +145,7 @@ class ParserTest {
         val code = "{f = 1 + (b + 2)}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
+        print(System.out, actualTree)
     }
 
     @Test
@@ -150,7 +153,7 @@ class ParserTest {
         val code = "BEGIN{a=1}END{a=1}END{a=1}1{a=1}\"\"{a=1}"
         val parser = Parser(TextLexer(code).iterator())
         val actualTree = parser.parse()
-        println(actualTree)
+        print(System.out, actualTree)
     }
 
 
