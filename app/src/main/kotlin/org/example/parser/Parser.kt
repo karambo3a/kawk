@@ -80,19 +80,22 @@ class Parser(private val tokenIterator: Iterator<Token>) {
                     statements.add(EmptySentence(currTokenPos()))
                     prevToken = nextToken()
                 }
+
                 prevToken.repr == ";" && match(TokenType.SPECIAL, ";") -> {
                     statements.add(EmptySentence(currTokenPos()))
                     prevToken = nextToken()
                 }
+
                 prevToken.repr == ";" && match(TokenType.SPECIAL, "}") -> {
                     statements.add(EmptySentence(currTokenPos()))
                 }
+
                 else -> {
                     prevToken = currentToken!!
                     statements.add(parseSentence())
                 }
             }
-      }
+        }
         if (prevToken.repr == ";" && match(TokenType.SPECIAL, "}")) {
             statements.add(EmptySentence(currTokenPos()))
         }
@@ -208,7 +211,7 @@ class Parser(private val tokenIterator: Iterator<Token>) {
             nextToken()
             val expr = parseExpr()
             expect(")")
-            BraceExprNode(expr, token.pos)
+            expr
         } else {
             throw ParserException("Unexpected '${token.repr}' at line=${token.pos.line} col=${token.pos.col}")
         }

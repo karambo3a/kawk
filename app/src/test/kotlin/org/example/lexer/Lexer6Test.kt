@@ -39,13 +39,15 @@ class Lexer6Test {
 
     @Test
     fun comments() {
-        val lexer = TextLexer("""
+        val lexer = TextLexer(
+            """
             # Это комментарий
             BEGIN // Тоже комментарий
             /* Многострочный
                комментарий */
             END
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         val tokens = lexer.toList()
         assertEquals(3, tokens.size)        // add eof

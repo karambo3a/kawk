@@ -195,7 +195,9 @@ class Lexer5Test {
     fun testLexerErrors() {
         val invalidSources = listOf(
             Pair("\"Unterminated string", "Unterminated string literal at Pos(line=1, col=1)"),
-            Pair("0xGHI", "Invalid hexadecimal integer literal at Pos(line=1, col=1)"),         // такая же ситуация как в Lexer3Test в singleFixedPointTokenSourceWithMultipleDots2
+            Pair(
+                "0xGHI",
+                "Invalid hexadecimal integer literal at Pos(line=1, col=1)"),         // такая же ситуация как в Lexer3Test в singleFixedPointTokenSourceWithMultipleDots2
             Pair(".12345678901", "Too many digits after decimal point at Pos(line=1, col=1)"),
             Pair("unknown!", "Unknown character '!' at Pos(line=1, col=8)"),
         )

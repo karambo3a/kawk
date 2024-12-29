@@ -33,7 +33,6 @@ class Runtime(private val programNode: ProgramNode, input: Reader) : AutoCloseab
         is StringNode -> processNode(node)
         is IdentifierNode -> processNode(node)
         is BinaryOpNode -> processNode(node)
-        is BraceExprNode -> processNode(node)
     }
 
     private fun processNode(node: IntNode) = node.value.toString()
@@ -46,8 +45,6 @@ class Runtime(private val programNode: ProgramNode, input: Reader) : AutoCloseab
             .map { Pair(it.first, processNode(it.second)) }
             .fold(processNode(node.initial)) { acc, elem -> BinaryOpNode.evaluate(acc, elem.first, elem.second) }
     }
-
-    private fun processNode(node: BraceExprNode) = processNode(node.expr)
 
     private fun processNode(node: SentenceNode) = when (node) {
         is FuncCallNode -> processNode(node)
@@ -95,6 +92,4 @@ class Runtime(private val programNode: ProgramNode, input: Reader) : AutoCloseab
         }
         lineReader.close()
     }
-
-
 }

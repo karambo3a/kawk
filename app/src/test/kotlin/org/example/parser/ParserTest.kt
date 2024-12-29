@@ -17,12 +17,14 @@ class ParserTest {
         val actualTree = parser.parse()
         print(System.out, actualTree)
     }
+
     @Test
     fun testEmptyBlock() {
         val parser = Parser(TextLexer("{}").iterator())
         val actualTree = parser.parse()
         print(System.out, actualTree)
     }
+
     @Test
     fun testJustSemi() {
         // sentences ::= | sentence | ';' sentences

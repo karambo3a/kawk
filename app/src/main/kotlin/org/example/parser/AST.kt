@@ -91,11 +91,6 @@ data class BinaryOpNode(
     }
 }
 
-data class BraceExprNode(
-    val expr: ExprNode,
-    override val pos: Pos
-) : ExprNode()
-
 sealed class SentenceNode : ASTNode()
 
 data class EmptySentence(
@@ -207,7 +202,6 @@ fun print(out: PrintStream, node: ExprNode, indent: Int) {
         is LiteralNode -> print(out, node, indent)
         is IdentifierNode -> print(out, node, indent)
         is BinaryOpNode -> print(out, node, indent)
-        is BraceExprNode -> print(out, node, indent)
     }
 }
 
@@ -243,9 +237,4 @@ fun print(out: PrintStream, node: FuncCallNode, indent: Int) {
     for (param in node.params) {
         print(out, param, indent + 1)
     }
-}
-
-fun print(out: PrintStream, node: BraceExprNode, indent: Int) {
-    out.println("${"\t".repeat(indent)}BraceExprNode(${node.pos})")
-    print(out, node.expr, indent + 1)
 }
